@@ -3,8 +3,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 const navigation = [
   { label: "Dashboard", path: "/dashboard", icon: "◫" },
   { label: "Projects", path: "/projects", icon: "▣" },
-  { label: "Artifacts", path: "/artifacts", icon: "◇" },
-  { label: "Tags", path: "/tags", icon: "#" },
 ];
 
 export default function Sidebar() {
@@ -44,9 +42,13 @@ export default function Sidebar() {
       </div>
 
       <div className="sidebar-footer">
-        <button className="upload-button" type="button">
+        <button
+          className="upload-button"
+          type="button"
+          onClick={() => navigate("/projects")}
+        >
           <span>＋</span>
-          Upload artifact
+          Add artifact
         </button>
 
         <button

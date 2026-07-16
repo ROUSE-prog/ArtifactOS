@@ -1,0 +1,123 @@
+.artifact-detail-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.artifact-detail-main {
+  min-width: 0;
+}
+
+.artifact-detail-card {
+  min-height: calc(100vh - 40px);
+  padding: 42px;
+  border-radius: 26px;
+}
+
+.artifact-detail-card h1 {
+  max-width: 900px;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.artifact-detail-description {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.artifact-metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin: 34px 0;
+}
+
+.artifact-metadata div {
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.artifact-metadata dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.artifact-metadata dd {
+  margin: 8px 0 0;
+}
+
+.artifact-text-content {
+  margin-top: 28px;
+  padding: 22px;
+  overflow-x: auto;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  white-space: pre-wrap;
+}
+
+.auth-switch {
+  margin: 22px 0 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--accent-light);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.pagination button {
+  padding: 10px 14px;
+  color: var(--accent-light);
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.pagination span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1000px) {
+  .artifact-detail-page {
+    grid-template-columns: 90px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .artifact-detail-page {
+    display: block;
+    padding: 12px;
+  }
+
+  .artifact-detail-card {
+    min-height: auto;
+    padding: 26px;
+  }
+}
