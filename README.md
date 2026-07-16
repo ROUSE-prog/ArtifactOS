@@ -201,43 +201,6 @@ Authorization: Bearer YOUR_ACCESS_TOKEN
 
 Deleting a project also deletes its related artifacts.
 
-## Testing Checklist
-
-Before submitting or deploying, verify:
-
-- Registration
-- Login and logout
-- Protected-route redirects
-- Project creation, editing, viewing, and deletion
-- Artifact creation, editing, viewing, and deletion
-- Project detail loading
-- Artifact detail loading
-- Dashboard pagination
-- Project pagination
-- Artifact search
-- Empty states
-- Error states
-- Ownership protection
-- Mobile layout
-
-## Screenshots
-
-Add screenshots here after the final UI is complete.
-
-Suggested screenshots:
-
-- Login page
-- Dashboard
-- Projects page
-- Project detail page
-- Artifact detail page
-
-Example:
-
-```md
-![ArtifactOS dashboard](docs/images/dashboard.png)
-```
-
 ## Future Improvements
 
 - File uploads and cloud storage
