@@ -8,9 +8,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("demo@artifactos.dev");
   const [password, setPassword] = useState("password123");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
       const response = await api.post("/auth/login", {
@@ -18,45 +21,54 @@ export default function LoginPage() {
         password,
       });
 
-      localStorage.setItem(
-        "token",
-        response.data.access_token
-      );
-
+      localStorage.setItem("token", response.data.access_token);
       navigate("/dashboard");
-    } catch (err) {
+    } catch {
       setError("Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1>ArtifactOS</h1>
+    <main className="login-page">
+      <section className="login-card glass">
+        <div className="brand-mark">A</div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <p className="eyebrow">ENGINEERING KNOWLEDGE</p>
+        <h1>ArtifactOS</h1>
+        <p className="subtitle">
+          Preserve, organize, and rediscover the work behind every system.
+        </p>
 
-        <br />
-        <br />
+        <form onSubmit={handleSubmit}>
+          <label>
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
 
-        <br />
-        <br />
+          {error && <p className="error-message">{error}</p>}
 
-        <button>Sign In</button>
-      </form>
-
-      <p style={{ color: "red" }}>{error}</p>
-    </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Enter workspace"}
+          </button>
+        </form>
+      </section>
+    </main>
   );
 }
