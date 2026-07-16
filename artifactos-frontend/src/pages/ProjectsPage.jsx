@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Pagination from "../components/Pagination";
 import Sidebar from "../components/Sidebar";
 import api from "../services/api";
 
 import "./ProjectsPage.css";
+
+const PER_PAGE = 6;
 
 const emptyForm = {
   title: "",
@@ -17,6 +20,12 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pages: 1,
+    total: 0,
+  });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,13 +37,30 @@ export default function ProjectsPage() {
     };
   }
 
-  async function loadProjects() {
+  async function loadProjects(targetPage = page) {
+    setLoading(true);
+    setError("");
+
     try {
       const response = await api.get("/projects", {
+        params: {
+          page: targetPage,
+          per_page: PER_PAGE,
+        },
         headers: authHeaders(),
       });
 
-      setProjects(response.data.projects);
+      const responseProjects = response.data.projects || [];
+      const responsePagination = response.data.pagination;
+
+      setProjects(responseProjects);
+      setPagination(
+        responsePagination || {
+          page: 1,
+          pages: 1,
+          total: responseProjects.length,
+        },
+      );
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         localStorage.removeItem("token");
@@ -54,8 +80,8 @@ export default function ProjectsPage() {
       return;
     }
 
-    loadProjects();
-  }, [navigate]);
+    loadProjects(page);
+  }, [navigate, page]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -68,16 +94,11 @@ export default function ProjectsPage() {
 
   function beginEdit(project) {
     setEditingId(project.id);
-
     setForm({
       title: project.title,
       description: project.description || "",
     });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function cancelEdit() {
@@ -120,7 +141,7 @@ export default function ProjectsPage() {
           ),
         );
       } else {
-        const response = await api.post(
+        await api.post(
           "/projects",
           {
             title,
@@ -131,10 +152,8 @@ export default function ProjectsPage() {
           },
         );
 
-        setProjects((currentProjects) => [
-          response.data.project,
-          ...currentProjects,
-        ]);
+        setPage(1);
+        await loadProjects(1);
       }
 
       cancelEdit();
@@ -162,11 +181,14 @@ export default function ProjectsPage() {
         headers: authHeaders(),
       });
 
-      setProjects((currentProjects) =>
-        currentProjects.filter(
-          (currentProject) => currentProject.id !== project.id,
-        ),
-      );
+      const shouldMoveBack =
+        projects.length === 1 && pagination.page > 1;
+
+      if (shouldMoveBack) {
+        setPage((current) => current - 1);
+      } else {
+        await loadProjects(page);
+      }
 
       if (editingId === project.id) {
         cancelEdit();
@@ -195,7 +217,7 @@ export default function ProjectsPage() {
           </div>
 
           <div className="project-count">
-            <strong>{projects.length}</strong>
+            <strong>{pagination.total}</strong>
             <span>Projects</span>
           </div>
         </header>
@@ -249,9 +271,7 @@ export default function ProjectsPage() {
               />
             </label>
 
-            {error && (
-              <p className="project-error">{error}</p>
-            )}
+            {error && <p className="project-error">{error}</p>}
 
             <button
               className="primary-button"
@@ -288,59 +308,77 @@ export default function ProjectsPage() {
             </div>
           )}
 
-          <div className="project-grid">
-            {projects.map((project) => (
-              <article
-                className="project-card glass"
-                key={project.id}
-              >
-                <button
-                  className="project-open-button"
-                  type="button"
-                  onClick={() =>
-                    navigate(`/projects/${project.id}`)
-                  }
-                >
-                  <div className="project-card-icon">P</div>
-
-                  <div className="project-card-copy">
-                    <h3>{project.title}</h3>
-
-                    <p>
-                      {project.description ||
-                        "No description has been added."}
-                    </p>
-                  </div>
-                </button>
-
-                <footer className="project-card-footer">
-                  <span>
-                    Updated{" "}
-                    {new Date(
-                      project.updated_at,
-                    ).toLocaleDateString()}
-                  </span>
-
-                  <div className="project-card-actions">
+          {!loading && (
+            <>
+              <div className="project-grid">
+                {projects.map((project) => (
+                  <article
+                    className="project-card glass"
+                    key={project.id}
+                  >
                     <button
+                      className="project-open-button"
                       type="button"
-                      onClick={() => beginEdit(project)}
+                      onClick={() =>
+                        navigate(`/projects/${project.id}`)
+                      }
                     >
-                      Edit
+                      <div className="project-card-icon">P</div>
+
+                      <div className="project-card-copy">
+                        <h3>{project.title}</h3>
+                        <p>
+                          {project.description ||
+                            "No description has been added."}
+                        </p>
+                      </div>
                     </button>
 
-                    <button
-                      className="delete-project-button"
-                      type="button"
-                      onClick={() => handleDelete(project)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </footer>
-              </article>
-            ))}
-          </div>
+                    <footer className="project-card-footer">
+                      <span>
+                        Updated{" "}
+                        {new Date(
+                          project.updated_at,
+                        ).toLocaleDateString()}
+                      </span>
+
+                      <div className="project-card-actions">
+                        <button
+                          type="button"
+                          onClick={() => beginEdit(project)}
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          className="delete-project-button"
+                          type="button"
+                          onClick={() => handleDelete(project)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </footer>
+                  </article>
+                ))}
+              </div>
+
+              <Pagination
+                page={pagination.page}
+                pages={pagination.pages}
+                total={pagination.total}
+                itemLabel="projects"
+                onPrevious={() =>
+                  setPage((current) => Math.max(1, current - 1))
+                }
+                onNext={() =>
+                  setPage((current) =>
+                    Math.min(pagination.pages, current + 1),
+                  )
+                }
+              />
+            </>
+          )}
         </section>
       </main>
     </div>
