@@ -1,3 +1,6 @@
+<img width="800" height="399" alt="ScreenRecording2026-07-17at8 28 56AM-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/b96c5c00-33ec-4838-b1ae-fc6ff471fa91" />
+
+
 # ArtifactOS
 
 ArtifactOS is a full-stack engineering knowledge platform for organizing the work behind software systems.
