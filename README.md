@@ -1,4 +1,4 @@
-<img width="800" height="399" alt="ScreenRecording2026-07-17at8 28 56AM-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/b96c5c00-33ec-4838-b1ae-fc6ff471fa91" />
+<img width="800" height="398" alt="ScreenRecording2026-07-17at9 28 46AM-ezgif com-video-to-gif-converter (2)" src="https://github.com/user-attachments/assets/afb1f18f-36ea-4ed8-89fc-e235021b9766" />
 
 
 # ArtifactOS
